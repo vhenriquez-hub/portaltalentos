@@ -177,6 +177,9 @@ footer ul li{
 /* ====CARRUSEL====*/
 #carouselExampleIndicators{
     max-width: 60%;
-    border: 1px solid red;
     margin: 0 auto;
+    
+}
+#carouselExampleIndicators img{
+    border-radius: 10px;
 }
