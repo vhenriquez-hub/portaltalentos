@@ -8,33 +8,15 @@ function validarFormulario(event) {
     var email = document.getElementById("email").value;
     var telefono = document.getElementById("telefono").value;
 
-    // Validar nombre vacio
-    if (nombre == "") {
-        alert("Por favor ingresa tu nombre.");
-        return false;
-    }
-
-    // Validar apellido vacio
-    if (apellido == "") {
-        alert("Por favor ingresa tu apellido.");
-        return false;
-    }
-
-    // Validar email vacio
-    if (email == "") {
-        alert("Por favor ingresa tu correo electrónico.");
+    // Validar si algún campo está vacío
+    if (nombre == "" || apellido == "" || email == "" || telefono == "") {
+        alert("Porfavor completa el formulario");
         return false;
     }
 
     // Validar si el email tiene una arroba (usando indexof)
     if (email.indexOf("@") == -1) {
         alert("Correo electrónico inválido !");
-        return false;
-    }
-
-    // Validar teléfono vacio
-    if (telefono == "") {
-        alert("Falta tu número de teléfono.");
         return false;
     }
 
