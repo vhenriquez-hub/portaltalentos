@@ -156,3 +156,15 @@ footer ul li{
 #carouselExampleIndicators img{
     border-radius: 10px;
 }
+
+###==formulario==###
+
+input,
+textarea,
+select,
+button {
+  width: 150px;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
