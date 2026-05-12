@@ -213,6 +213,14 @@ footer ul li{
     margin-bottom: 16px;
 }
 
+/* Mensajes de error inline */
+.form-contacto .error-msg {
+    color: #e53e3e;
+    font-size: 12px;
+    display: none;
+    margin-top: 4px;
+}
+
 .form-contacto .btn-primary {
     background: linear-gradient(135deg, #4caf50, #2e7d32);
     border: none;
