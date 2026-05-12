@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Victor Henriquez">
+  <title>Portal de Talentos Escolares | PokéApi</title>
+  <link rel="icon" type="image/x-icon" href="../img/favicon.ico" />
+  <link rel="stylesheet" href="../css/styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+
+  <!-- Estilos de la Pokédex -->
+  <style>
+    /* ===== fondo general ===== */
+    body {
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* ===== contenedor principal tipo pokedex ===== */
+    .pokedex-container {
+      max-width: 500px;
+      margin: 30px auto;
+      background-color: #dc0a2d;
+      border-radius: 20px;
+      padding: 25px;
+      border: 4px solid #a00020;
+      box-shadow: 5px 5px 15px rgba(0,0,0,0.4);
+    }
+
+    /* ===== titulo ===== */
+    .pokedex-title {
+      text-align: center;
+      color: #fff;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* ===== lucecitas decorativas ===== */
+    .pokedex-lights {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .light-big {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #3faffa;
+      border: 3px solid #fff;
+      box-shadow: inset 5px 5px 10px rgba(255,255,255,0.4);
+    }
+
+    .light-small {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+
+    .light-red { background-color: #ff0000; }
+    .light-yellow { background-color: #ffdd00; }
+    .light-green { background-color: #00ff00; }
+
+    /* ===== pantalla donde se muestra el pokemon ===== */
+    .pokedex-screen {
+      background-color: #98cb98;
+      border: 4px solid #555;
+      border-radius: 10px;
+      padding: 20px;
+      min-height: 300px;
+      text-align: center;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .pokedex-screen img {
+      width: 160px;
+      height: 160px;
+      image-rendering: pixelated;
+    }
+
+    /* ===== nombre del pokemon ===== */
+    .pokemon-name {
+      font-size: 22px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #333;
+      margin-top: 5px;
+    }
+
+    /* ===== id del pokemon ===== */
+    .pokemon-id {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    /* ===== tipos ===== */
+    .pokemon-types {
+      margin-top: 5px;
+    }
+
+    .type-badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin: 2px;
+    }
+
+    /* ===== stats ===== */
+    .pokemon-stats {
+      text-align: left;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .pokemon-stats p {
+      margin: 2px 0;
+    }
+
+    /* ===== mensaje de no encontrado ===== */
+    .not-found {
+      color: #cc0000;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 40px;
+    }
+
+    /* ===== mensaje de cargando ===== */
+    .loading-msg {
+      color: #555;
+      font-size: 16px;
+      margin-top: 40px;
+    }
+
+    /* ===== zona de botones y buscador ===== */
+    .pokedex-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    #inputBuscar {
+      flex: 1;
+      padding: 8px 12px;
+      border: 2px solid #a00020;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    #inputBuscar:focus {
+      border-color: #3faffa;
+    }
+
+    /* ===== botones ===== */
+    .btn-pokedex {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      color: #fff;
+      transition: background-color 0.2s;
+    }
+
+    .btn-buscar {
+      background-color: #333;
+    }
+
+    .btn-buscar:hover {
+      background-color: #555;
+    }
+
+    .btn-random {
+      background-color: #f5a623;
+      width: 100%;
+    }
+
+    .btn-random:hover {
+      background-color: #d4911f;
+    }
+
+    /* ===== colores para los tipos de pokemon ===== */
+    .type-normal   { background-color: #a8a878; }
+    .type-fire     { background-color: #f08030; }
+    .type-water    { background-color: #6890f0; }
+    .type-grass    { background-color: #78c850; }
+    .type-electric { background-color: #f8d030; color: #333; }
+    .type-ice      { background-color: #98d8d8; color: #333; }
+    .type-fighting { background-color: #c03028; }
+    .type-poison   { background-color: #a040a0; }
+    .type-ground   { background-color: #e0c068; color: #333; }
+    .type-flying   { background-color: #a890f0; }
+    .type-psychic  { background-color: #f85888; }
+    .type-bug      { background-color: #a8b820; }
+    .type-rock     { background-color: #b8a038; }
+    .type-ghost    { background-color: #705898; }
+    .type-dragon   { background-color: #7038f8; }
+    .type-dark     { background-color: #705848; }
+    .type-steel    { background-color: #b8b8d0; color: #333; }
+    .type-fairy    { background-color: #ee99ac; }
+
+    /* ===== responsive ===== */
+    @media (max-width: 540px) {
+      .pokedex-container {
+        margin: 15px 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!--nav-->
+  <nav class="navbar navbar-expand-xl navbar-dark bg-success">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="../index.html"><img style="width: 25%" src="../img/images.png" alt="" /></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mynavbar">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="../html/musica.html">Música</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../html/tecnologia.html">Tecnología</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../html/contacto.html">Contacto</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../html/pokemon.html">PokeApi</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!--fin nav-->
+
+  <!-- ===== POKEDEX ===== -->
+  <div class="pokedex-container">
+
+    <!-- lucecitas de arriba -->
+    <div class="pokedex-lights">
+      <div class="light-big"></div>
+      <div class="light-small light-red"></div>
+      <div class="light-small light-yellow"></div>
+      <div class="light-small light-green"></div>
+    </div>
+
+    <h1 class="pokedex-title">Pokédex</h1>
+
+    <!-- pantalla -->
+    <div class="pokedex-screen" id="pantalla">
+      <p class="loading-msg">Escribe un nombre o presiona "Aleatorio" 🎮</p>
+    </div>
+
+    <!-- controles -->
+    <div class="pokedex-controls">
+      <!-- fila del buscador -->
+      <div class="search-row">
+        <input type="text" id="inputBuscar" placeholder="Ej: pikachu, charizard...">
+        <button class="btn-pokedex btn-buscar" id="btnBuscar">Buscar</button>
+      </div>
+      <!-- boton aleatorio -->
+      <button class="btn-pokedex btn-random" id="btnRandom">🎲 Pokémon Aleatorio</button>
+    </div>
+
+  </div>
+  <!-- fin pokedex -->
+
+  <footer>
+    <p style="text-align:center;">Desarrollado por Victor. 2026</p>
+  </footer>
+
+  <!-- ===== SCRIPT CON JQUERY ===== -->
+  <script>
+    // esperar a que el documento este listo
+    $(document).ready(function () {
+
+      // ---------- funcion para mostrar un pokemon ----------
+      function mostrarPokemon(nombreOId) {
+        // limpiar la pantalla y mostrar cargando
+        $("#pantalla").html('<p class="loading-msg">Buscando...</p>');
+
+        // hacer la peticion a la PokeAPI con ajax de jQuery
+        $.ajax({
+          url: "https://pokeapi.co/api/v2/pokemon/" + nombreOId,
+          method: "GET",
+          // si todo sale bien
+          success: function (data) {
+            // sacar los datos que necesitamos
+            var nombre = data.name;
+            var id = data.id;
+            var imagen = data.sprites.other["official-artwork"].front_default;
+            // si no hay artwork usar el sprite normal
+            if (!imagen) {
+              imagen = data.sprites.front_default;
+            }
+            var tipos = data.types;
+            var hp = data.stats[0].base_stat;
+            var ataque = data.stats[1].base_stat;
+            var defensa = data.stats[2].base_stat;
+            var velocidad = data.stats[5].base_stat;
+            var peso = data.weight / 10; // viene en hectogramos
+            var altura = data.height / 10; // viene en decimetros
+
+            // armar el html de los tipos
+            var tiposHtml = "";
+            for (var i = 0; i < tipos.length; i++) {
+              var tipeName = tipos[i].type.name;
+              tiposHtml += '<span class="type-badge type-' + tipeName + '">' + tipeName + '</span>';
+            }
+
+            // armar todo el html de la pantalla
+            var html = "";
+            html += '<img src="' + imagen + '" alt="' + nombre + '">';
+            html += '<p class="pokemon-id">#' + id + '</p>';
+            html += '<p class="pokemon-name">' + nombre + '</p>';
+            html += '<div class="pokemon-types">' + tiposHtml + '</div>';
+            html += '<div class="pokemon-stats">';
+            html += '<p>❤️ HP: ' + hp + '</p>';
+            html += '<p>⚔️ Ataque: ' + ataque + '</p>';
+            html += '<p>🛡️ Defensa: ' + defensa + '</p>';
+            html += '<p>💨 Velocidad: ' + velocidad + '</p>';
+            html += '<p>⚖️ Peso: ' + peso + ' kg</p>';
+            html += '<p>📏 Altura: ' + altura + ' m</p>';
+            html += '</div>';
+
+            // meter el html en la pantalla
+            $("#pantalla").html(html);
+          },
+          // si no se encuentra el pokemon
+          error: function () {
+            $("#pantalla").html('<p class="not-found">❌ Pokémon no encontrado!<br>Intenta con otro nombre</p>');
+          }
+        });
+      }
+
+      // ---------- boton buscar ----------
+      $("#btnBuscar").click(function () {
+        // agarrar lo que escribio el usuario
+        var busqueda = $("#inputBuscar").val().trim().toLowerCase();
+
+        // si no escribio nada le avisamos
+        if (busqueda === "") {
+          alert("Escribe el nombre de un Pokémon!");
+          return;
+        }
+
+        // buscar el pokemon
+        mostrarPokemon(busqueda);
+      });
+
+      // ---------- tambien buscar con Enter ----------
+      $("#inputBuscar").keypress(function (e) {
+        if (e.which === 13) {
+          $("#btnBuscar").click();
+        }
+      });
+
+      // ---------- boton aleatorio ----------
+      $("#btnRandom").click(function () {
+        // generar un numero random entre 1 y 1025 (total de pokemon)
+        var randomId = Math.floor(Math.random() * 1025) + 1;
+        mostrarPokemon(randomId);
+      });
+
+    }); // fin document ready
+  </script>
+
+</body>
+
+</html>
